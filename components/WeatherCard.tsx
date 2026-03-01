@@ -1,3 +1,6 @@
+"use client";
+
+import { useTemperature } from "@/hooks/useTemperature";
 import { WeatherData } from "@/lib/weather";
 import { formatDay, weatherSummary } from "@/utils/weather";
 import { ForecastCard } from "./ForecastCard";
@@ -5,6 +8,7 @@ import { WeatherChip } from "./WeatherChip";
 
 export function WeatherCard({ data }: { data: WeatherData }) {
 	const { location, current, forecast } = data;
+	const temperature = useTemperature(current.temp_c);
 
 	return (
 		<div className="flex flex-col items-center my-1.5 w-full h-full mx-auto">
@@ -13,7 +17,9 @@ export function WeatherCard({ data }: { data: WeatherData }) {
 			</h2>
 			<p className="text-slate-700">{formatDay()}</p>
 			<p className="text-slate-700 font-bold">{current.condition.text}</p>
-			<h1 className="text-8xl font-bold text-slate-950">{current.temp_c}°</h1>
+			<h1 className="text-[10rem] font-bold text-slate-950 font-inter">
+				{temperature}°
+			</h1>
 
 			<div className="text-slate-700 my-3">
 				<h3 className="font-bold">Daily Summary</h3>
