@@ -1,36 +1,96 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Weather Forecast
 
-## Getting Started
+App de previsão do tempo com dados atuais e projeção de 3 dias, construído com Next.js App Router e WeatherAPI.
 
-First, run the development server:
+## Funcionalidades
+
+- Clima atual: temperatura, condição, sensação térmica, vento, umidade e visibilidade
+- Previsão de 3 dias com ícone, temperatura máxima e probabilidade de chuva
+- Busca por cidade via URL search params
+- Fundo dinâmico que muda conforme a condição climática
+- Resumo diário baseado na diferença entre temperatura real e sensação térmica
+- Cache automático de 5 minutos por cidade
+
+## Tech Stack
+
+- [Next.js 16](https://nextjs.org/) — App Router, Server Components, fetch com `revalidate`
+- [React 19](https://react.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS 4](https://tailwindcss.com/)
+- [WeatherAPI](https://www.weatherapi.com/) — dados meteorológicos
+
+## Estrutura do projeto
+
+```
+app/
+  page.tsx          # Server Component — orquestra fetch e layout
+  layout.tsx        # Root layout e metadata
+  loading.tsx       # Estado de carregamento (Suspense automático)
+  error.tsx         # Boundary de erro
+
+components/
+  WeatherCard.tsx   # Card principal com dados do clima atual
+  WeatherChip.tsx   # Chip de métrica (vento, umidade, visibilidade)
+  ForecastCard.tsx  # Card de previsão por dia
+  SearchInput.tsx   # Input de busca (Client Component)
+
+lib/
+  weather.ts        # Interface WeatherData + função getWeather
+
+utils/
+  weather.ts        # Funções puras: formatDay, formatDate,
+                    # getBackgroundColor, weatherSummary
+```
+
+## Setup
+
+### 1. Instalar dependências
+
+```bash
+npm install
+```
+
+### 2. Configurar variável de ambiente
+
+Crie um arquivo `.env.local` na raiz do projeto:
+
+```env
+WEATHER_API_KEY=sua_chave_aqui
+```
+
+Obtenha sua chave gratuita em [weatherapi.com](https://www.weatherapi.com/).
+
+### 3. Rodar em desenvolvimento
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Acesse [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Arquitetura
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Server Components
 
-## Learn More
+`page.tsx` é um Server Component assíncrono. O fetch acontece no servidor — a API key nunca é exposta ao cliente e a página chega ao browser já renderizada.
 
-To learn more about Next.js, take a look at the following resources:
+```ts
+// A cidade vem da URL: /?city=Tokyo
+export default async function Home({ searchParams }) {
+  const { city = "London" } = await searchParams;
+  const data = await getWeather(city);
+  // ...
+}
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Cache e revalidação
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+O fetch usa a estratégia `revalidate` do Next.js. Requisições para a mesma cidade são cacheadas por 5 minutos no servidor, evitando chamadas desnecessárias à API.
 
-## Deploy on Vercel
+```ts
+fetch(url, { next: { revalidate: 300 } })
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Busca por cidade
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+`SearchInput` é o único Client Component. Ao submeter o formulário, ele atualiza a URL com `router.push`, o que dispara uma nova renderização do Server Component com a cidade escolhida.
