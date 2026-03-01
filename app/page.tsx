@@ -1,5 +1,4 @@
-import { SearchInput } from "@/components/SearchInput";
-import { WeatherCard } from "@/components/WeatherCard";
+import { FlipCard } from "@/components/FlipCard";
 import { getWeather } from "@/lib/weather";
 import { getBackgroundColor } from "@/utils/weather";
 
@@ -14,10 +13,9 @@ export default async function Home({
 	return (
 		<div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black">
 			<main
-				className={`flex min-h-screen w-full flex-col items-center px-10 py-20 ${getBackgroundColor(data.current.condition.text)} sm:items-start`}
+				className={`relative flex min-h-screen w-full max-w-xl flex-col items-center px-10 py-20 ${getBackgroundColor(data.current.condition.text)} sm:items-start`}
 			>
-				<WeatherCard data={data} />
-				<SearchInput />
+				<FlipCard data={data} />
 			</main>
 		</div>
 	);
