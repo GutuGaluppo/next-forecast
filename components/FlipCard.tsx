@@ -1,7 +1,8 @@
 "use client";
 
+import { useSearchHistory } from "@/hooks/useSearchHistory";
 import { WeatherData } from "@/lib/weather";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SearchPanel } from "./SearchPanel";
 import { WeatherCard } from "./WeatherCard";
 import { GearIcon } from "./ui/GearIcon";
@@ -9,6 +10,12 @@ import { BackArrowIcon } from "./ui/BackArrowIcon";
 
 export function FlipCard({ data }: { data: WeatherData }) {
 	const [isFlipped, setIsFlipped] = useState(false);
+	const { history, add, clear } = useSearchHistory();
+
+	useEffect(() => {
+		add(data.location.name, Math.round(data.current.temp_c));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data.location.name]);
 
 	const handleFlip = () => {
 		setIsFlipped((f) => !f);
@@ -44,7 +51,12 @@ export function FlipCard({ data }: { data: WeatherData }) {
 						transform: "rotateY(180deg)",
 					}}
 				>
-					<SearchPanel isVisible={isFlipped} handleFlip={handleFlip} />
+					<SearchPanel
+						isVisible={isFlipped}
+						handleFlip={handleFlip}
+						history={history}
+						clear={clear}
+					/>
 				</div>
 			</div>
 		</div>

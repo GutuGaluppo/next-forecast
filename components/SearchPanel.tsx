@@ -1,25 +1,44 @@
 "use client";
 
-import { useSearchHistory } from "@/hooks/useSearchHistory";
+import { HistoryEntry } from "@/hooks/useSearchHistory";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function SearchPanel({
 	isVisible,
 	handleFlip,
+	history,
+	clear,
 }: {
 	isVisible: boolean;
 	handleFlip: () => void;
+	history: HistoryEntry[];
+	clear: () => void;
 }) {
 	const router = useRouter();
-	const { history, add, clear } = useSearchHistory();
 	const inputRef = useRef<HTMLInputElement>(null);
+	const listRef = useRef<HTMLUListElement>(null);
+	const [listMaxHeight, setListMaxHeight] = useState<number | undefined>(
+		undefined,
+	);
 
 	useEffect(() => {
 		if (isVisible) {
 			const id = setTimeout(() => inputRef.current?.focus(), 400);
 			return () => clearTimeout(id);
 		}
+	}, [isVisible]);
+
+	useEffect(() => {
+		function updateHeight() {
+			if (listRef.current) {
+				const top = listRef.current.getBoundingClientRect().top;
+				setListMaxHeight(window.innerHeight - top - 100);
+			}
+		}
+		if (isVisible) updateHeight();
+		window.addEventListener("resize", updateHeight);
+		return () => window.removeEventListener("resize", updateHeight);
 	}, [isVisible]);
 
 	function handleSubmit(e: React.BaseSyntheticEvent) {
@@ -30,15 +49,13 @@ export function SearchPanel({
 			) as HTMLInputElement
 		).value.trim();
 		if (city) {
-			add(city);
 			router.push(`/?city=${encodeURIComponent(city)}`);
 		}
 		handleFlip();
 	}
 
-	function handleSelect(city: string) {
-		add(city);
-		router.push(`/?city=${encodeURIComponent(city)}`);
+	function handleSelect(entry: HistoryEntry) {
+		router.push(`/?city=${encodeURIComponent(entry.city)}`);
 		handleFlip();
 	}
 
@@ -51,14 +68,14 @@ export function SearchPanel({
 					ref={inputRef}
 					name="city"
 					type="text"
-					placeholder="Digite uma cidade..."
-					className="w-full rounded-md border px-4 py-2 text-slate-950 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+					placeholder="Enter city name"
+					className="w-full rounded-md border px-4 py-2 text-slate-950 focus:outline-none focus:ring-2 focus:ring-slate-600"
 				/>
 				<button
 					type="submit"
 					className="rounded-md bg-slate-500 px-4 py-2 text-white hover:bg-slate-600"
 				>
-					Buscar
+					Search
 				</button>
 			</form>
 
@@ -73,14 +90,26 @@ export function SearchPanel({
 							Limpar
 						</button>
 					</div>
-					<ul className="flex flex-col gap-1">
-						{history.map((city) => (
-							<li key={city}>
+					<ul
+						ref={listRef}
+						style={{ maxHeight: listMaxHeight }}
+						className="flex flex-col gap-1 overflow-y-auto p-3"
+					>
+						{history.map((entry) => (
+							<li
+								key={entry.city}
+								className="shadow-xl shadow-secondary rounded-xl mb-6 py-4 px-2"
+							>
 								<button
-									onClick={() => handleSelect(city)}
-									className="w-full text-left px-3 py-2 rounded-lg text-slate-800 hover:bg-white/60 transition-colors text-sm"
+									onClick={() => handleSelect(entry)}
+									className="w-full text-left px-3 py-2 rounded-lg text-slate-800 hover:bg-white/60 transition-colors text-3xl flex justify-between items-center"
 								>
-									{city}
+									<span>{entry.city}</span>
+									{entry.temperature !== undefined && (
+										<span className="text-slate-500 font-bold">
+											{entry.temperature}°
+										</span>
+									)}
 								</button>
 							</li>
 						))}

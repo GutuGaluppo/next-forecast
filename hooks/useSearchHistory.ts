@@ -4,17 +4,27 @@ import { useState } from "react";
 
 const KEY = "weather-search-history";
 
+export interface HistoryEntry {
+	city: string;
+	temperature?: number;
+}
+
 export function useSearchHistory() {
-	const [history, setHistory] = useState<string[]>(() => {
+	const [history, setHistory] = useState<HistoryEntry[]>(() => {
 		const stored = localStorage.getItem(KEY);
-		return stored ? JSON.parse(stored) : [];
+		if (!stored) return [];
+		const parsed = JSON.parse(stored);
+		// Migrate old string[] format
+		return parsed.map((item: unknown) =>
+			typeof item === "string" ? { city: item } : item,
+		);
 	});
 
-	function add(city: string) {
+	function add(city: string, temperature?: number) {
 		setHistory((prev) => {
 			const next = [
-				city,
-				...prev.filter((c) => c.toLowerCase() !== city.toLowerCase()),
+				{ city, temperature },
+				...prev.filter((e) => e.city.toLowerCase() !== city.toLowerCase()),
 			].slice(0, 8);
 			localStorage.setItem(KEY, JSON.stringify(next));
 			return next;
