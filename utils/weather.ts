@@ -21,6 +21,13 @@ export function getWeatherTheme(condition: string): WeatherTheme {
 		return { bg: "bg-gradient-to-b from-purple-900 to-purple-500", dark: true };
 	if (c.includes("fog") || c.includes("mist"))
 		return { bg: "bg-gradient-to-b from-gray-200 to-gray-500", dark: false };
+	if (c.includes("haze"))
+		return {
+			bg: "bg-gradient-to-b from-yellow-100 to-yellow-400",
+			dark: false,
+		};
+	if (c.includes("overcast"))
+		return { bg: "bg-gradient-to-b from-gray-400 to-gray-700", dark: true };
 	return { bg: "bg-zinc-50", dark: false };
 }
 
