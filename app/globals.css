@@ -1,16 +1,41 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'SF Compact Display';
+  font-style: normal;
+  font-weight: 100;
+  src: url('/sf-compact-display-cufonfonts-webfont/sf-compact-display-thin-58646eb43a785.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'SF Compact Display';
+  font-style: normal;
+  font-weight: 500;
+  src: url('/sf-compact-display-cufonfonts-webfont/sf-compact-display-medium-5864711817c30.woff') format('woff');
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
 
+.weather-light {
+  --color-primary: #0f172a;          /* slate-950 */
+  --color-secondary: #334155;        /* slate-700 */
+}
+
+.weather-dark {
+  --color-primary: #ffffff;
+  --color-secondary: rgba(255, 255, 255, 0.75);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
   --font-inter: var(--font-inter);
+  --font-sf-compact: 'SF Compact Display', sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,5 +48,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-inter), sans-serif;
+  font-family: var(--font-sf-compact);
 }
