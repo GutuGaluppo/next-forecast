@@ -1,5 +1,3 @@
-import { useMemo } from "react";
-
-export function useTemperature(celsius: number) {
-  return useMemo(() => Math.round(celsius), [celsius]);
+export function useTemperature(celsius: number): number {
+	return Math.round(celsius);
 }

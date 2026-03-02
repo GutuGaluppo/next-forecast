@@ -4,7 +4,7 @@ import { useSearchHistory } from "@/hooks/useSearchHistory";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 
-export function Settings({
+export function SearchPanel({
 	isVisible,
 	handleFlip,
 }: {
@@ -39,6 +39,7 @@ export function Settings({
 	function handleSelect(city: string) {
 		add(city);
 		router.push(`/?city=${encodeURIComponent(city)}`);
+		handleFlip();
 	}
 
 	return (
@@ -51,7 +52,7 @@ export function Settings({
 					name="city"
 					type="text"
 					placeholder="Digite uma cidade..."
-					className="w-full rounded-md border px-4 py-2 text-slate-950 focus:outline-none focus:ring-2 focus:ring-blue-500"
+					className="w-full rounded-md border px-4 py-2 text-slate-950 focus:outline-none focus:ring-2 focus:ring-yellow-500"
 				/>
 				<button
 					type="submit"

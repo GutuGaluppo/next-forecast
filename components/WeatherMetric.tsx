@@ -6,7 +6,7 @@ const ICONS: Record<string, string> = {
 	Visibility: "/view.png",
 };
 
-export function WeatherChip({
+export function WeatherMetric({
 	label,
 	value,
 }: {
@@ -14,16 +14,16 @@ export function WeatherChip({
 	value: string | number;
 }) {
 	return (
-		<div className="flex flex-col items-center justify-between m-2 h-full">
+		<div className="flex flex-col items-center justify-between m-2 h-full w-full">
 			<Image
 				src={ICONS[label] ?? "/wind.png"}
 				alt={label}
 				width={30}
 				height={30}
-				className="mb-1"
+				className="mb-1 filter invert"
 			/>
-			<p className="text-lg font-bold text-slate-900">{value}</p>
-			<p className="text-md text-slate-700">{label}</p>
+			<p className="text-lg font-bold text-white">{value}</p>
+			<p className="text-md text-white">{label}</p>
 		</div>
 	);
 }

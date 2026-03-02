@@ -3,15 +3,10 @@ export interface WeatherData {
 	current: {
 		temp_c: number;
 		feelslike_c: number;
-		precip_mm: number;
 		humidity: number;
-		uv: number;
 		wind_kph: number;
-		wind_dir: string;
 		vis_km: number;
-		dewpoint_c: number;
 		condition: { text: string };
-		last_updated: string;
 	};
 	forecast: {
 		forecastday: Array<{
