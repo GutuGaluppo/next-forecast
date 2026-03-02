@@ -1,9 +1,11 @@
 import Image from "next/image";
 
-const ICONS: Record<string, string> = {
-	Wind: "/wind.png",
-	Humidity: "/drop.png",
-	Visibility: "/view.png",
+type Icon = { src: string; animated: boolean };
+
+const ICONS: Record<string, Icon> = {
+	Wind: { src: "/animated/wind.gif", animated: true },
+	Humidity: { src: "/animated/humidity.gif", animated: true },
+	Visibility: { src: "/animated/view.gif", animated: true },
 };
 
 export function WeatherMetric({
@@ -13,14 +15,17 @@ export function WeatherMetric({
 	label: string;
 	value: string | number;
 }) {
+	const icon = ICONS[label] ?? ICONS.Wind;
+
 	return (
 		<div className="flex flex-col items-center justify-between m-2 h-full w-full">
 			<Image
-				src={ICONS[label] ?? "/wind.png"}
+				src={icon.src}
 				alt={label}
-				width={30}
-				height={30}
-				className="mb-1 filter invert"
+				width={40}
+				height={40}
+				unoptimized={icon.animated}
+				className={`mb-1 ${icon.animated ? "" : "filter invert"}`}
 			/>
 			<p className="text-lg font-bold text-white">{value}</p>
 			<p className="text-md text-white">{label}</p>
