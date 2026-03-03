@@ -11,6 +11,7 @@ export interface HistoryEntry {
 
 export function useSearchHistory() {
 	const [history, setHistory] = useState<HistoryEntry[]>(() => {
+		if (typeof window === "undefined") return [];
 		const stored = localStorage.getItem(KEY);
 		if (!stored) return [];
 		const parsed = JSON.parse(stored);
