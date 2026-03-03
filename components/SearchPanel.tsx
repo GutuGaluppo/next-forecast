@@ -1,6 +1,7 @@
 "use client";
 
 import { HistoryEntry } from "@/hooks/useSearchHistory";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -52,6 +53,7 @@ export function SearchPanel({
 			router.push(`/?city=${encodeURIComponent(city)}`);
 		}
 		handleFlip();
+		e.currentTarget.reset();
 	}
 
 	function handleSelect(entry: HistoryEntry) {
@@ -60,7 +62,21 @@ export function SearchPanel({
 	}
 
 	return (
-		<div className="flex flex-col w-full min-h-full pt-12 gap-4">
+		<div className="relative flex flex-col w-full h-full gap-4 pt-12 px-8 overflow-hidden">
+			<Image
+				src="/pixeliota-mkARVg4-BQ4-unsplash.png"
+				alt=""
+				fill
+				className="object-cover -z-10"
+				priority
+			/>
+			<button
+				onClick={handleFlip}
+				aria-label="Flip back"
+				className="absolute top-8 right-8 z-10 hover:opacity-70 transition-opacity"
+			>
+				<Image src="/flip.png" alt="Flip back" width={24} height={24} />
+			</button>
 			<h2 className="text-xl font-bold text-slate-900">Search</h2>
 
 			<form onSubmit={handleSubmit} className="flex gap-2">
@@ -69,36 +85,42 @@ export function SearchPanel({
 					name="city"
 					type="text"
 					placeholder="Enter city name"
-					className="w-full rounded-md border px-4 py-2 text-slate-950 focus:outline-none focus:ring-2 focus:ring-slate-600"
+					className="w-full rounded-md border-2 border-secondary bg-slate-900 text-amber-50 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-slate-600"
 				/>
 				<button
 					type="submit"
-					className="rounded-md bg-slate-500 px-4 py-2 text-white hover:bg-slate-600"
+					className="rounded-md bg-slate-800 px-4 py-2 text-white hover:bg-slate-600"
 				>
 					Search
 				</button>
 			</form>
 
 			{history.length > 0 && (
-				<div>
-					<div className="flex justify-between items-center mb-2">
+				<>
+					<div className="flex justify-between items-center my-4">
 						<h3 className="font-semibold text-slate-700 text-sm">Recentes</h3>
 						<button
 							onClick={clear}
-							className="text-xs text-red-500 hover:text-red-700 transition-colors"
+							className="text-red-400 hover:text-red-600 transition-colors"
+							aria-label="Limpar histórico"
 						>
-							Limpar
+							<Image
+								src="/data-cleaning.png"
+								alt="Limpar histórico"
+								width={20}
+								height={20}
+							/>
 						</button>
 					</div>
 					<ul
 						ref={listRef}
 						style={{ maxHeight: listMaxHeight }}
-						className="flex flex-col gap-1 overflow-y-auto p-3"
+						className="flex flex-col gap-1 overflow-y-auto"
 					>
 						{history.map((entry) => (
 							<li
 								key={entry.city}
-								className="shadow-xl shadow-secondary rounded-xl mb-6 py-4 px-2"
+								className="glassmorphism rounded-xl mb-4 py-2 px-1"
 							>
 								<button
 									onClick={() => handleSelect(entry)}
@@ -106,7 +128,7 @@ export function SearchPanel({
 								>
 									<span>{entry.city}</span>
 									{entry.temperature !== undefined && (
-										<span className="text-slate-500 font-bold">
+										<span className="text-slate-700 font-bold">
 											{entry.temperature}°
 										</span>
 									)}
@@ -114,7 +136,7 @@ export function SearchPanel({
 							</li>
 						))}
 					</ul>
-				</div>
+				</>
 			)}
 		</div>
 	);
