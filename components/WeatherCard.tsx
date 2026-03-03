@@ -18,7 +18,7 @@ export function WeatherCard({ data }: { data: WeatherData }) {
 	});
 
 	return (
-		<div className="flex flex-col items-center my-1.5 w-full h-full mx-auto">
+		<div className="flex flex-col items-center my-1.5 pt-12 px-8 w-full h-full mx-auto">
 			<h2 className="mb-3 text-4xl font-bold text-primary">{location.name}</h2>
 			<p className="rounded-full px-4 py-1 bg-black/80 mb-2 text-white font-bold">
 				{formatDay()}

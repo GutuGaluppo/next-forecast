@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { SearchPanel } from "./SearchPanel";
 import { WeatherCard } from "./WeatherCard";
 import { GearIcon } from "./ui/GearIcon";
-import { BackArrowIcon } from "./ui/BackArrowIcon";
 
 export function FlipCard({ data }: { data: WeatherData }) {
 	const [isFlipped, setIsFlipped] = useState(false);
@@ -22,30 +21,35 @@ export function FlipCard({ data }: { data: WeatherData }) {
 	};
 
 	return (
-		<div className="relative w-full" style={{ perspective: "1200px" }}>
-			<button
-				onClick={() => handleFlip()}
-				aria-label={isFlipped ? "Close settings" : "Open settings"}
-				className="absolute top-0 right-0 z-10 text-slate-700 hover:text-slate-900 transition-colors"
-			>
-				{isFlipped ? <BackArrowIcon /> : <GearIcon />}
-			</button>
-
+		<div
+			className="relative w-full h-full overflow-hidden"
+			style={{ perspective: "1200px" }}
+		>
 			<div
-				className="relative w-full transition-transform duration-700"
+				className="relative w-full h-full transition-transform duration-700"
 				style={{
 					transformStyle: "preserve-3d",
 					transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
 				}}
 			>
 				{/* Front */}
-				<div style={{ backfaceVisibility: "hidden" }}>
+				<div
+					className="absolute inset-0 w-full h-full"
+					style={{ backfaceVisibility: "hidden" }}
+				>
+					<button
+						onClick={handleFlip}
+						aria-label="Open search"
+						className="absolute top-8 left-8 z-10 text-slate-700 hover:text-slate-900 transition-colors"
+					>
+						<GearIcon />
+					</button>
 					<WeatherCard data={data} />
 				</div>
 
 				{/* Back */}
 				<div
-					className="absolute inset-0 w-full"
+					className="absolute inset-0 w-full h-full"
 					style={{
 						backfaceVisibility: "hidden",
 						transform: "rotateY(180deg)",

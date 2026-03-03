@@ -12,9 +12,9 @@ export default async function Home({
 	const { bg, dark } = getWeatherTheme(data.current.condition.text);
 
 	return (
-		<div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black">
+		<div className="flex h-screen items-center justify-center bg-zinc-50 dark:bg-black">
 			<main
-				className={`relative flex min-h-screen w-full max-w-xl flex-col items-center px-10 py-8 ${bg} ${dark ? "weather-dark" : "weather-light"} sm:items-start`}
+				className={`relative flex h-full w-full max-w-xl flex-col items-center justify-center ${bg} ${dark ? "weather-dark" : "weather-light"} sm:items-start`}
 			>
 				<FlipCard data={data} />
 			</main>
